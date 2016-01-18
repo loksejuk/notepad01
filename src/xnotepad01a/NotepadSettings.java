@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
+import javax.swing.JOptionPane;
 /**
  *
  * @author Operator
@@ -17,37 +18,86 @@ import java.util.Properties;
 public class NotepadSettings {
     
     Properties props;
+    //public NotepadLang lang = new NotepadLang("en");
     
     
-    public NotepadSettings()
+    
+    public NotepadSettings() throws IOException
         {
-        load();
-        }//konstruktor
-    
-    public void load()
-        {
-        File configFile = new File("config.properties");
 
         try {
-            FileReader reader = new FileReader(configFile);
+            FileReader reader = new FileReader("config.properties");
             props = new Properties();
             props.load(reader);
-
-            String host = props.getProperty("host");
-
-            System.out.print("Host name is: " + host);
             reader.close();
             } 
         catch (FileNotFoundException ex) 
             {
-            System.out.println("leci");
-            // file does not exist
+            createSettings();            
+            FileReader reader = new FileReader("config.properties");
+            props = new Properties();
+            props.load(reader);
+            reader.close();
             } 
-        catch (IOException ex) 
-            {
-            // I/O error
-            }
         }
     
     
+    private void createSettings() throws IOException
+        {
+        System.out.println("file doesn't exist!");
+            File file = new File("config.properties");
+            if (file.createNewFile()){
+	        System.out.println("File is created!");
+	      }else{
+	        System.out.println("File already exists.");
+	      }
+            
+        //wypelnienie pliku domyslnymi wartosciami
+            
+        //message dialog
+            JOptionPane.showMessageDialog(null, "No settings file found! \n Default settings file has been created.\n Please run application again.", "Information", JOptionPane.INFORMATION_MESSAGE);
+        }
+    
+    
+    public int getScrolls()
+        {
+        String scrolls = props.getProperty("scrolls");//bez pliku properties sie wysypuje
+        if(scrolls == null)//check if there's an scrolls option
+            {
+            return 3;
+            }
+        else
+            {//if there is, we can switch
+            switch (scrolls)
+                {
+                case "0":
+                    return 0;
+                case "1":
+                    return 1;
+                case "2":
+                    return 2;
+                case "3":
+                    return 3;
+                default:
+                    return 3;
+                }
+            }
+        }
+    
+    public void setScrolls()
+        {
+        
+        }
+    
+    public String getLang()
+        {
+        String lang = props.getProperty("lang");
+        if (lang == null || lang.isEmpty())
+                {
+                System.out.println("jest!");
+                lang="en";
+                }
+        System.out.println(lang);
+        return lang;
+        }
 }

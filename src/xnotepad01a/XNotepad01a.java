@@ -5,6 +5,8 @@
  */
 package xnotepad01a;
 
+import java.io.IOException;
+
 /**
  *
  * @author Operator
@@ -21,10 +23,10 @@ public class XNotepad01a {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         
-        NotepadSettings notepad_s = new NotepadSettings();
-        NotepadMain notepad = new NotepadMain("", 3);
+        
+        NotepadMain notepad = new NotepadMain("");
         //notepad.changeText("alalala");
         notepad.setVisible(true);
     }

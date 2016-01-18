@@ -10,12 +10,15 @@ package xnotepad01a;
  * @author Operator
  */
 
-import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Int;
+//import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Int;
 import javax.swing.*; // for the main JFrame design
 import java.awt.*; // for the GUI stuff
 import java.awt.event.*; // for the event handling
 import java.util.Scanner; // for reading from a file
 import java.io.*; // for writing to a file
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -23,10 +26,12 @@ import java.io.*; // for writing to a file
 public class NotepadMain extends JFrame implements ActionListener {
     
     
+    Properties properties;
+    
     private String text01 = "";
     private TextArea textArea;
     
-    private TextArea textarea2 = new TextArea(); 
+    private TextArea textarea2 = new TextArea(); //nigdzie nie uzyte
     
     private MenuBar menuBar = new MenuBar(); // first, create a MenuBar item
     private Menu file = new Menu(); // our File menu
@@ -36,12 +41,26 @@ public class NotepadMain extends JFrame implements ActionListener {
     private MenuItem openFile = new MenuItem();  // an open option
     private MenuItem saveFile = new MenuItem(); // a save option
     private MenuItem close = new MenuItem(); // and a close option!
+    private NotepadSettings notepad_s;
+    
+    public NotepadLang lang;
     
     
     
-    public NotepadMain(String text01, int scrolls)
+    public NotepadMain(String text01) throws IOException
         {
-        switch (scrolls){
+            
+        try {
+            
+            notepad_s = new NotepadSettings();
+        } catch (IOException ex) {
+            Logger.getLogger(NotepadMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        
+        switch (notepad_s.getScrolls())
+                {
                 case 0:
                     textArea = new TextArea(text01, 0,0, TextArea.SCROLLBARS_NONE);
                     break;
@@ -57,9 +76,15 @@ public class NotepadMain extends JFrame implements ActionListener {
                 default:
                     textArea = new TextArea(text01, 0,0, TextArea.SCROLLBARS_BOTH);
                     break;
-                        }
+                }
+        
+        
+        lang = new NotepadLang(notepad_s.getLang());
+        
+        
+        
         this.setSize(500, 300); // set the initial size of the window
-        this.setTitle("Java Notepad Tutorial"); // set the title of the window
+        this.setTitle(lang.getProperty("w1s0")); // set the title of the window
         setDefaultCloseOperation(EXIT_ON_CLOSE); // set the default close operation (exit when it gets closed)
         this.textArea.setFont(new Font("Century Gothic", Font.BOLD, 12)); // set a default font for the TextArea
         // this is why we didn't have to worry about the size of the TextArea!
@@ -70,7 +95,7 @@ public class NotepadMain extends JFrame implements ActionListener {
         this.menuBar.add(this.file); // we'll configure this later
         // first off, the design of the menuBar itself. Pretty simple, all we need to do
         // is add a couple of menus, which will be populated later on
-        this.file.setLabel("File");
+        this.file.setLabel(lang.getProperty("w1s1"));
         // now it's time to work with the menu. I'm only going to add a basic File menu
         // but you could add more!
         // now we can start working on the content of the menu~ this gets a little repetitive,
@@ -78,19 +103,19 @@ public class NotepadMain extends JFrame implements ActionListener {
 
 
         // time for the repetitive stuff. let's add the "Open" option
-        this.openFile.setLabel("Open"); // set the label of the menu item
+        this.openFile.setLabel(lang.getProperty("w1s2")); // set the label of the menu item
         this.openFile.addActionListener(this); // add an action listener (so we know when it's been clicked
         this.openFile.setShortcut(new MenuShortcut(KeyEvent.VK_O, false)); // set a keyboard shortcut
         this.file.add(this.openFile); // add it to the "File" menu
 
         // and the save...
-        this.saveFile.setLabel("Save");
+        this.saveFile.setLabel(lang.getProperty("w1s3"));
         this.saveFile.addActionListener(this);
         this.saveFile.setShortcut(new MenuShortcut(KeyEvent.VK_S, false));
         this.file.add(this.saveFile);
 
         // and finally, the close option
-        this.close.setLabel("Close");
+        this.close.setLabel(lang.getProperty("w1s4"));
         // along with our "CTRL+F4" shortcut to close the window, we also have
         // the default closer, as stated at the beginning of this tutorial.
         // this means that we actually have TWO shortcuts to close:
@@ -100,7 +125,7 @@ public class NotepadMain extends JFrame implements ActionListener {
         this.close.addActionListener(this);
         this.file.add(this.close);
         
-        this.settings.setLabel("Settings");
+        this.settings.setLabel(lang.getProperty("w1s5"));
         this.menuBar.add(this.settings);
         
         
